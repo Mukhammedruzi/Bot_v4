@@ -1,0 +1,24 @@
+# Bot_v4 Requirements
+
+# Async HTTP requests
+aiohttp
+
+# Environment variables
+python-dotenv
+
+# Telegram Bot API
+python-telegram-bot
+
+# YouTube API
+google-api-python-client
+google-auth
+google-auth-oauthlib
+
+# Data processing
+pandas
+
+# Scheduling
+apscheduler
+
+# Logging and utilities
+requests
