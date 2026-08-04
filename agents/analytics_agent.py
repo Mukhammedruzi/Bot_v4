@@ -1,155 +1,102 @@
 # agents/analytics_agent.py
 
-"""
-Bot_v4 Analytics Agent
-
-Collects and analyzes:
-- YouTube statistics
-- Telegram statistics
-- Content performance
-- Engagement data
-"""
-
-
+import os
+import logging
 from datetime import datetime
 
 
 class AnalyticsAgent:
-    """
-    Content analytics agent.
-    """
-
 
     def __init__(self):
 
         self.name = "analytics_agent"
 
-        self.history = []
-
-
-
-    async def initialize(self):
-
-        return {
-            "agent": self.name,
-            "status": "initialized"
-        }
-
-
-
-    def collect_data(self, content_id, platform, data):
-
-        """
-        Save platform statistics.
-        """
-
-        record = {
-
-            "content_id": content_id,
-
-            "platform": platform,
-
-            "data": data,
-
-            "time": datetime.now().isoformat()
-
-        }
-
-
-        self.history.append(
-            record
+        self.logger = logging.getLogger(
+            "BOT_V4"
         )
 
-
-        return record
-
-
-
-    def analyze_performance(self, record):
-
-        """
-        Analyze content result.
-        """
-
-        data = record.get(
-            "data",
-            {}
+        self.youtube_key = os.getenv(
+            "YOUTUBE_API_KEY"
         )
-
-
-        views = data.get(
-            "views",
-            0
-        )
-
-        likes = data.get(
-            "likes",
-            0
-        )
-
-
-        return {
-
-            "views": views,
-
-            "likes": likes,
-
-            "performance":
-
-                "good"
-                if views > 1000
-                else
-                "normal"
-
-        }
-
-
-
-    def get_best_content(self):
-
-        """
-        Find successful content.
-        """
-
-        if not self.history:
-            return None
-
-
-        return max(
-            self.history,
-            key=lambda x:
-            x["data"].get(
-                "views",
-                0
-            )
-        )
-
 
 
     async def execute(self, task):
 
+        try:
+
+            self.logger.info(
+                "Analytics Agent started"
+            )
+
+
+            analytics = await self.collect_analytics(
+                task
+            )
+
+
+            result = {
+
+                "agent": self.name,
+
+                "status": "completed",
+
+                "time": datetime.now().isoformat(),
+
+                "input": task,
+
+                "analytics": analytics
+
+            }
+
+
+            self.logger.info(
+                "Analytics Agent finished"
+            )
+
+
+            return result
+
+
+        except Exception as error:
+
+            self.logger.error(
+                f"Analytics Agent error: {error}"
+            )
+
+            raise error
+
+
+
+    async def collect_analytics(self, content):
+
         """
-        Main entry from Core Brain.
+        Analytics layer.
+
+        YouTube API orqali keyinchalik:
+
+        - views
+        - likes
+        - comments
+        - watch time
+        - CTR
+        - retention
+
+        olinadi.
+
         """
-
-        record = self.collect_data(
-            task.get("id", "unknown"),
-            task.get("platform", "unknown"),
-            task.get("data", {})
-        )
-
-
-        analysis = self.analyze_performance(
-            record
-        )
-
 
         return {
 
-            "agent": self.name,
+            "views": 0,
 
-            "record": record,
+            "likes": 0,
 
-            "analysis": analysis
+            "comments": 0,
 
-      }
+            "watch_time": 0,
+
+            "ctr": 0,
+
+            "status": "analytics_ready"
+
+        }
