@@ -8,11 +8,16 @@ Starts the complete AI system.
 
 
 import asyncio
-
+import logging
 
 from core.brain import CoreBrain
 
+logger = logging.getLogger("Bot_v4")
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
 
 async def start_bot():
 
