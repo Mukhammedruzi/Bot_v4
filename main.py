@@ -67,7 +67,7 @@ async def main():
             logger.error(f"Error: {e}")
             await asyncio.sleep(60)
 
-    except KeyboardInterrupt:
+        except KeyboardInterrupt:
 
         print(
             "Stopping Bot_v4..."
