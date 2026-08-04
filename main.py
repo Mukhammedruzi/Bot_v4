@@ -81,13 +81,13 @@ async def main():
             )
 
 
-    finally:
+        finally:
 
-        if brain:
+            if brain:
 
-            await stop_bot(
-                brain
-            )
+                await stop_bot(
+                    brain
+                )
 
 
 if __name__ == "__main__":
