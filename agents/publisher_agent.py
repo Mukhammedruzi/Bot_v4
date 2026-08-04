@@ -1,139 +1,126 @@
 # agents/publisher_agent.py
 
-"""
-Bot_v4 Publisher Agent
-
-Publishes approved content to:
-- YouTube
-- Telegram
-
-Controls publishing status and history.
-"""
-
-
+import os
+import logging
 from datetime import datetime
 
 
 class PublisherAgent:
-    """
-    Content publishing agent.
-    """
-
 
     def __init__(self):
 
         self.name = "publisher_agent"
 
-        self.platforms = [
-            "youtube",
-            "telegram"
-        ]
-
-        self.published_history = []
-
-
-
-    async def initialize(self):
-
-        return {
-            "agent": self.name,
-            "status": "initialized"
-        }
-
-
-
-    def prepare_publish(self, content, platform):
-
-        """
-        Prepare content before publishing.
-        """
-
-        return {
-
-            "platform": platform,
-
-            "content": content,
-
-            "status": "ready",
-
-            "time": datetime.now().isoformat()
-
-        }
-
-
-
-    async def publish_youtube(self, content):
-
-        """
-        YouTube publishing system.
-        API connection will be added here.
-        """
-
-        publish_data = self.prepare_publish(
-            content,
-            "youtube"
+        self.logger = logging.getLogger(
+            "BOT_V4"
         )
 
-
-        publish_data["status"] = "published"
-
-
-        self.published_history.append(
-            publish_data
+        self.youtube_key = os.getenv(
+            "YOUTUBE_API_KEY"
         )
 
-
-        return publish_data
-
-
-
-    async def publish_telegram(self, content):
-
-        """
-        Telegram publishing system.
-        Bot API connection will be added here.
-        """
-
-        publish_data = self.prepare_publish(
-            content,
-            "telegram"
+        self.telegram_token = os.getenv(
+            "TELEGRAM_BOT_TOKEN"
         )
 
-
-        publish_data["status"] = "published"
-
-
-        self.published_history.append(
-            publish_data
+        self.telegram_channel = os.getenv(
+            "TELEGRAM_CHANNEL_ID"
         )
-
-
-        return publish_data
-
 
 
     async def execute(self, task):
 
+        try:
+
+            self.logger.info(
+                "Publisher Agent started"
+            )
+
+
+            result = await self.publish_content(
+                task
+            )
+
+
+            output = {
+
+                "agent": self.name,
+
+                "status": "completed",
+
+                "time": datetime.now().isoformat(),
+
+                "input": task,
+
+                "publish_result": result
+
+            }
+
+
+            self.logger.info(
+                "Publisher Agent finished"
+            )
+
+
+            return output
+
+
+        except Exception as error:
+
+            self.logger.error(
+                f"Publisher Agent error: {error}"
+            )
+
+            raise error
+
+
+
+    async def publish_content(self, content):
+
         """
-        Main entry from Core Brain.
+        Platform publishing layer.
+
+        YouTube:
+        - API key / OAuth ulanish joyi
+
+        Telegram:
+        - Bot token
+        - Channel ID
+
+        Keyinchalik:
+        - title
+        - description
+        - hashtags
+        - thumbnail
+        - schedule
+        ulanadi.
         """
 
-        youtube_result = await self.publish_youtube(
-            task
-        )
+        platforms = {
+
+            "youtube": False,
+
+            "telegram": False
+
+        }
 
 
-        telegram_result = await self.publish_telegram(
-            task
-        )
+        if self.youtube_key:
+
+            platforms["youtube"] = True
+
+
+        if self.telegram_token and self.telegram_channel:
+
+            platforms["telegram"] = True
 
 
         return {
 
-            "agent": self.name,
+            "published": True,
 
-            "youtube": youtube_result,
+            "platforms": platforms,
 
-            "telegram": telegram_result
+            "message": "Content prepared for publishing"
 
         }
