@@ -70,14 +70,14 @@ async def main():
         except KeyboardInterrupt:
 
         print(
-            "Stopping Bot_v4..."
+              "Stopping Bot_v4..."
         )
 
 
     except Exception as error:
 
         print(
-            f"System error: {error}"
+              "System error: {error}"
         )
 
 
