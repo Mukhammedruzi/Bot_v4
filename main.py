@@ -1,98 +1,59 @@
 # main.py
 
-"""
-Bot_v4 Main Runner
-
-Starts the complete AI system.
-"""
-
-
 import asyncio
 import logging
 
 from core.brain import CoreBrain
 
-logger = logging.getLogger("Bot_v4")
+
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
-async def start_bot():
 
-    """
-    Start Bot_v4 system.
-    """
+
+async def main():
 
     brain = CoreBrain()
 
 
-    await brain.start()
+    try:
+
+        await brain.start()
 
 
-    print(
-        "Bot_v4 started successfully"
-    )
+        print(
+            "Bot_v4 started successfully"
+        )
 
 
-    return brain
+        while True:
 
-
-
-async def stop_bot(brain):
-
-    """
-    Shutdown Bot_v4 system.
-    """
-
-    await brain.shutdown()
-
-
-    print(
-        "Bot_v4 stopped"
-    )
-
-
-
-async def main():
-    logger.info("Main started")
-
-    while True:
-        try:
-            logger.info("Cycle started")
-
-            # bu yerda eski ishlar turadi
-
-            logger.info("Cycle finished")
-
-            await asyncio.sleep(900)  # 15 daqiqa kutish
-
-        except Exception as e:
-            logger.error(f"Error: {e}")
-            await asyncio.sleep(60)
-
-        except KeyboardInterrupt:
-
-            print(
-                "Stopping Bot_v4..."
+            await asyncio.sleep(
+                60
             )
 
 
-        except Exception as error:
+    except KeyboardInterrupt:
 
-            print(
-                f"System error: {error}"
-            )
+        print(
+            "Stopping Bot_v4..."
+        )
 
 
-        finally:
+    except Exception as error:
 
-            if brain:
+        logging.error(
+            f"System error: {error}"
+        )
 
-                await stop_bot(
-                    brain
-                )
+
+    finally:
+
+        await brain.shutdown()
+
 
 
 if __name__ == "__main__":
