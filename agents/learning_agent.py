@@ -1,144 +1,100 @@
 # agents/learning_agent.py
 
-"""
-Bot_v4 Learning Agent
-
-Improves content decisions using:
-- Analytics data
-- Performance history
-- Content patterns
-"""
-
-
+import logging
 from datetime import datetime
 
 
 class LearningAgent:
-    """
-    Self-improvement and optimization agent.
-    """
-
 
     def __init__(self):
 
         self.name = "learning_agent"
 
-        self.learning_data = []
-
-        self.rules = {}
-
-
-
-    async def initialize(self):
-
-        return {
-            "agent": self.name,
-            "status": "initialized"
-        }
-
-
-
-    def collect_feedback(self, analytics):
-
-        """
-        Receive analytics results.
-        """
-
-        data = {
-
-            "analytics": analytics,
-
-            "time": datetime.now().isoformat()
-
-        }
-
-
-        self.learning_data.append(
-            data
+        self.logger = logging.getLogger(
+            "BOT_V4"
         )
 
-
-        return data
-
-
-
-    def analyze_patterns(self):
-
-        """
-        Find content patterns.
-        """
-
-        if not self.learning_data:
-
-            return {
-                "status": "no_data"
-            }
-
-
-        return {
-
-            "status": "analyzed",
-
-            "total_records":
-                len(self.learning_data)
-
-        }
-
-
-
-    def improve_strategy(self):
-
-        """
-        Update content strategy.
-        """
-
-        analysis = self.analyze_patterns()
-
-
-        self.rules.update({
-
-            "content_selection":
-                "optimized",
-
-            "title_style":
-                "improved",
-
-            "timing":
-                "adjusted"
-
-        })
-
-
-        return {
-
-            "analysis": analysis,
-
-            "new_rules": self.rules
-
-        }
-
+        self.history = []
 
 
     async def execute(self, task):
 
+        try:
+
+            self.logger.info(
+                "Learning Agent started"
+            )
+
+
+            result = await self.learn(
+                task
+            )
+
+
+            output = {
+
+                "agent": self.name,
+
+                "status": "completed",
+
+                "time": datetime.now().isoformat(),
+
+                "input": task,
+
+                "learning": result
+
+            }
+
+
+            self.logger.info(
+                "Learning Agent finished"
+            )
+
+
+            return output
+
+
+        except Exception as error:
+
+            self.logger.error(
+                f"Learning Agent error: {error}"
+            )
+
+            raise error
+
+
+
+    async def learn(self, data):
+
         """
-        Main entry from Core Brain.
+        Learning system.
+
+        Keyinchalik:
+
+        - eng yaxshi mavzular
+        - CTR tahlil
+        - tomosha davomiyligi
+        - auditoriya reaksiyasi
+        - kontent optimizatsiyasi
+
+        shu yerda saqlanadi.
         """
 
-        feedback = self.collect_feedback(
-            task
+        self.history.append(
+            data
         )
-
-
-        improvement = self.improve_strategy()
 
 
         return {
 
-            "agent": self.name,
+            "learned": True,
 
-            "feedback": feedback,
+            "memory_size": len(
+                self.history
+            ),
 
-            "improvement": improvement
+            "recommendations": [],
+
+            "status": "learning_updated"
 
         }
