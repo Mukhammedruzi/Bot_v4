@@ -1,139 +1,58 @@
 # agents/news_agent.py
 
-"""
-Bot_v4 News Agent
-
-Collects PUBG and MLBB news from
-allowed/public sources.
-"""
-
+import logging
 from datetime import datetime
 
 
 class NewsAgent:
-    """
-    PUBG & MLBB news monitoring agent.
-    """
 
     def __init__(self):
 
         self.name = "news_agent"
 
-        self.games = [
-            "PUBG Mobile",
-            "Mobile Legends Bang Bang"
-        ]
-
-        self.sources = []
-
-        self.news_cache = []
-
-
-    async def initialize(self):
-
-        """
-        Prepare agent.
-        """
-
-        return {
-            "agent": self.name,
-            "status": "initialized"
-        }
-
-
-
-    def add_source(self, source):
-
-        """
-        Add allowed news source.
-        """
-
-        self.sources.append(source)
-
-
-
-    async def collect_news(self):
-
-        """
-        Collect news from sources.
-
-        Real API/scraper connections
-        will be connected here.
-        """
-
-        result = {
-
-            "agent": self.name,
-
-            "time": datetime.now().isoformat(),
-
-            "news": self.news_cache
-
-        }
-
-
-        return result
-
-
-
-    def filter_news(self, news):
-
-        """
-        Remove useless information.
-        """
-
-        filtered = []
-
-
-        for item in news:
-
-            if item:
-
-                filtered.append(item)
-
-
-        return filtered
-
-
-
-    async def analyze_news(self, news):
-
-        """
-        Analyze importance of news.
-        """
-
-        return {
-
-            "important": True,
-
-            "topic": news,
-
-            "category": "gaming"
-
-        }
-
+        self.logger = logging.getLogger(
+            "BOT_V4"
+        )
 
 
     async def execute(self, task):
 
-        """
-        Main entry from Brain.
-        """
+        try:
 
-        news = await self.collect_news()
-
-
-        analysis = await self.analyze_news(
-            news
-        )
+            self.logger.info(
+                "NewsAgent started"
+            )
 
 
-        return {
+            result = {
 
-            "agent": self.name,
+                "agent": self.name,
 
-            "task": task,
+                "status": "completed",
 
-            "result": analysis
+                "time": datetime.now().isoformat(),
 
-        }
+                "topic": task,
+
+                "source": "news_collector",
+
+                "items": []
+
+            }
+
+
+            self.logger.info(
+                "NewsAgent finished"
+            )
+
+
+            return result
+
+
+        except Exception as error:
+
+            self.logger.error(
+                f"NewsAgent error: {error}"
+            )
+
+            raise error
