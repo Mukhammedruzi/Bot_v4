@@ -60,12 +60,14 @@ async def main():
         brain = await start_bot()
 
 
-        # Main runtime loop
-        while True:
+                # Main runtime loop
+        work_time = 2 * 60 * 60   # 2 soat ishlash
 
-            await asyncio.sleep(
-                60
-            )
+        await asyncio.sleep(work_time)
+
+        print(
+            "Bot_v4 working time finished. Restart needed."
+        )
 
 
     except KeyboardInterrupt:
