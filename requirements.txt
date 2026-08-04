@@ -14,9 +14,6 @@ google-api-python-client
 google-auth
 google-auth-oauthlib
 
-# Data processing
-pandas
-
 # Scheduling
 apscheduler
 
