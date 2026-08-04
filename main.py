@@ -51,42 +51,21 @@ async def stop_bot(brain):
 
 
 async def main():
+    logger.info("Main started")
 
-    brain = None
+    while True:
+        try:
+            logger.info("Cycle started")
 
-    try:
+            # bu yerda eski ishlar turadi
 
-        while True:
+            logger.info("Cycle finished")
 
-            brain = await start_bot()
+            await asyncio.sleep(900)  # 15 daqiqa kutish
 
-            print(
-                "Bot_v4 started"
-            )
-
-            # 2 soat ishlash
-            await asyncio.sleep(
-                2 * 60 * 60
-            )
-
-            print(
-                "Bot_v4 resting..."
-            )
-
-            if brain:
-
-                await stop_bot(
-                    brain
-                )
-
-                brain = None
-
-
-            # 15 daqiqa dam olish
-            await asyncio.sleep(
-                15 * 60
-            )
-
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            await asyncio.sleep(60)
 
     except KeyboardInterrupt:
 
