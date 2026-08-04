@@ -54,42 +54,40 @@ async def main():
 
     brain = None
 
+    try:
 
-        try:
+        while True:
 
-            while True:
+            brain = await start_bot()
 
-                       brain = await start_bot()
+            print(
+                "Bot_v4 started"
+            )
 
-                       print(
-                             "Bot_v4 started"
-                       )
+            # 2 soat ishlash
+            await asyncio.sleep(
+                2 * 60 * 60
+            )
 
-                       # 2 soat ishlash
-                       await asyncio.sleep(
-                           2 * 60 * 60
-                       )
-  
+            print(
+                "Bot_v4 resting..."
+            )
 
-                       print(
-                             "Bot_v4 resting..."
-                       )
+            if brain:
 
-                       # botni to'xtatish
-                       if brain:
+                await stop_bot(
+                    brain
+                )
 
-                       await stop_bot(
-                           brain
-                       )
-
-                       brain = None
+                brain = None
 
 
-                       # 15 daqiqa dam
-                       await asyncio.sleep(
-                           15 * 60
-                       )
-            
+            # 15 daqiqa dam olish
+            await asyncio.sleep(
+                15 * 60
+            )
+
+
     except KeyboardInterrupt:
 
         print(
@@ -111,7 +109,6 @@ async def main():
             await stop_bot(
                 brain
             )
-
 
 
 if __name__ == "__main__":
