@@ -1,150 +1,108 @@
 # agents/media_agent.py
 
-"""
-Bot_v4 Media Agent
-
-Creates:
-- Video structure
-- Shorts format
-- Subtitles
-- Voice preparation
-- Thumbnail data
-"""
-
-
+import os
+import logging
 from datetime import datetime
 
 
 class MediaAgent:
-    """
-    Media production agent.
-    """
-
 
     def __init__(self):
 
         self.name = "media_agent"
 
-        self.supported_media = [
-            "shorts",
-            "youtube_video",
-            "thumbnail",
-            "subtitle",
-            "voice"
-        ]
+        self.logger = logging.getLogger(
+            "BOT_V4"
+        )
 
-
-
-    async def initialize(self):
-
-        return {
-            "agent": self.name,
-            "status": "initialized"
-        }
-
-
-
-    def create_thumbnail_data(self, title):
-
-        """
-        Prepare thumbnail information.
-        """
-
-        return {
-
-            "title": title,
-
-            "style": "gaming",
-
-            "elements": [
-                "main subject",
-                "attention text",
-                "game visuals"
-            ]
-
-        }
-
-
-
-    def create_subtitles(self, script):
-
-        """
-        Prepare subtitle structure.
-        """
-
-        return {
-
-            "language": "uz",
-
-            "content": script
-
-        }
-
-
-
-    def prepare_voice(self, script):
-
-        """
-        Prepare voice generation data.
-        """
-
-        return {
-
-            "text": script,
-
-            "voice": "ai_voice",
-
-            "status": "ready"
-
-        }
-
-
-
-    async def create_video(self, content):
-
-        """
-        Create video package.
-        """
-
-        return {
-
-            "type": "video",
-
-            "content": content,
-
-            "thumbnail": self.create_thumbnail_data(
-                content.get("title", "Gaming")
-            ),
-
-            "subtitle": self.create_subtitles(
-                content.get("script", "")
-            ),
-
-            "voice": self.prepare_voice(
-                content.get("script", "")
-            ),
-
-            "created": datetime.now().isoformat()
-
-        }
-
+        self.media_api_key = os.getenv(
+            "MEDIA_API_KEY"
+        )
 
 
     async def execute(self, task):
 
+        try:
+
+            self.logger.info(
+                "Media Agent started"
+            )
+
+
+            media = await self.create_media(
+                task
+            )
+
+
+            result = {
+
+                "agent": self.name,
+
+                "status": "completed",
+
+                "time": datetime.now().isoformat(),
+
+                "input": task,
+
+                "media": media
+
+            }
+
+
+            self.logger.info(
+                "Media Agent finished"
+            )
+
+
+            return result
+
+
+        except Exception as error:
+
+            self.logger.error(
+                f"Media Agent error: {error}"
+            )
+
+            raise error
+
+
+
+    async def create_media(self, content):
+
         """
-        Main entry from Core Brain.
+        Video, audio, subtitle, thumbnail
+        generator ulanish joyi.
+
+        API key .env orqali olinadi.
         """
 
-        result = await self.create_video(
-            task
-        )
+        if not self.media_api_key:
+
+            return {
+
+                "video": None,
+
+                "audio": None,
+
+                "thumbnail": None,
+
+                "subtitle": None,
+
+                "status": "media_generator_not_connected"
+
+            }
 
 
         return {
 
-            "agent": self.name,
+            "video": "",
 
-            "result": result
+            "audio": "",
 
-  }
+            "thumbnail": "",
+
+            "subtitle": "",
+
+            "status": "media_created"
+
+        }
