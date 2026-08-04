@@ -9,44 +9,32 @@ Main controller for:
 - AI Writer
 - Media Agent
 - Quality Agent
-- Smart Publish Manager
 - Publisher Agent
 - Analytics Agent
 - Learning Agent
-- Health Monitor
-
 """
 
-import os
-import asyncio
 import logging
 from datetime import datetime
-from typing import Dict, Any, Optional
 
 
 # ==============================
-# 1. CORE SETUP
+# CORE CONFIGURATION
 # ==============================
 
 
 class ConfigCenter:
-    """
-    Central configuration manager.
-    All system settings are controlled here.
-    """
 
     def __init__(self):
+
         self.config = {
+
             "bot_name": "Bot_v4",
 
             "content": {
                 "shorts_per_day": 2,
                 "videos_per_day": 2,
                 "telegram_posts_per_day": 2,
-            },
-
-            "publish": {
-                "first_publish_time": "18:00",
             },
 
             "agents": {
@@ -58,23 +46,30 @@ class ConfigCenter:
                 "publisher_agent": True,
                 "analytics_agent": True,
                 "learning_agent": True,
-                "health_monitor": True,
             }
         }
 
-    def get(self, key: str):
+
+    def get(self, key):
+
         return self.config.get(key)
 
+
     def all(self):
+
         return self.config
 
 
+
+# ==============================
+# LOGGER SYSTEM
+# ==============================
+
+
 class LoggerSystem:
-    """
-    Global logging system.
-    """
 
     def __init__(self):
+
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s | %(levelname)s | %(message)s"
@@ -82,276 +77,375 @@ class LoggerSystem:
 
         self.logger = logging.getLogger("BOT_V4")
 
+
     def info(self, message):
+
         self.logger.info(message)
 
+
     def error(self, message):
+
         self.logger.error(message)
 
+
     def warning(self, message):
+
         self.logger.warning(message)
 
 
+
+# ==============================
+# HEALTH MONITOR
+# ==============================
+
+
 class HealthMonitor:
-    """
-    System health monitoring.
-    """
 
     def __init__(self):
+
         self.status = "starting"
         self.errors = []
 
+
     def update(self, status):
+
         self.status = status
 
+
     def add_error(self, error):
+
         self.errors.append({
+
             "time": datetime.now().isoformat(),
+
             "error": str(error)
+
         })
 
 
+
+# ==============================
+# STORAGE
+# ==============================
+
+
 class Storage:
-    """
-    Data storage layer.
-    """
 
     def __init__(self):
+
         self.data = {
+
             "tasks": [],
+
             "content_history": [],
+
             "analytics": [],
-            "learning_data": []
+
+            "learning": []
+
         }
 
+
     def save(self, key, value):
+
         if key in self.data:
+
             self.data[key].append(value)
 
+
     def get(self, key):
+
         return self.data.get(key, [])
-# ==============================
-# 2. AGENT MANAGER
-# ==============================
 
-
-class AgentManager:
-    """
-    All AI agents are managed from here.
-    """
-
-    def __init__(self, logger):
-        self.logger = logger
-        self.agents = {}
-
-    def register_agent(self, name, agent):
-        """
-        Add new agent to system.
-        """
-        self.agents[name] = agent
-        self.logger.info(f"Agent registered: {name}")
-
-    def get_agent(self, name):
-        return self.agents.get(name)
-
-    async def run_agent(self, name, task):
-        """
-        Run selected agent.
-        """
-
-        agent = self.get_agent(name)
-
-        if not agent:
-            raise Exception(
-                f"Agent not found: {name}"
-            )
-
-        try:
-            self.logger.info(
-                f"Running agent: {name}"
-            )
-
-            result = await agent.execute(task)
-
-            return result
-
-        except Exception as error:
-            self.logger.error(
-                f"{name} error: {error}"
-            )
-
-            raise error
 
 
 # ==============================
-# AGENT INTERFACES
+# BASE AGENT
 # ==============================
 
 
 class BaseAgent:
-    """
-    Base structure for all future agents.
-    """
 
     def __init__(self, name):
+
         self.name = name
 
+
     async def execute(self, task):
-        raise NotImplementedError(
-            "Agent execute method required"
-        )
+
+        raise NotImplementedError
+
+
+
+# ==============================
+# AGENTS
+# ==============================
 
 
 class NewsAgent(BaseAgent):
-    """
-    PUBG and MLBB news collector.
-    """
 
     async def execute(self, task):
+
         return {
+
             "agent": self.name,
-            "status": "news collected",
+
+            "result": "news collected",
+
             "data": task
+
         }
+
 
 
 class ResearchAgent(BaseAgent):
-    """
-    Creates ideas when news is unavailable.
-    """
 
     async def execute(self, task):
+
         return {
+
             "agent": self.name,
-            "status": "research completed",
+
+            "result": "research completed",
+
             "data": task
+
         }
+
 
 
 class WriterAgent(BaseAgent):
-    """
-    Creates scripts and posts.
-    """
 
     async def execute(self, task):
+
         return {
+
             "agent": self.name,
-            "status": "content written",
+
+            "result": "script created",
+
             "data": task
+
         }
+
 
 
 class MediaAgent(BaseAgent):
-    """
-    Creates video, audio, subtitles and thumbnails.
-    """
 
     async def execute(self, task):
+
         return {
+
             "agent": self.name,
-            "status": "media created",
+
+            "result": "media created",
+
             "data": task
+
         }
+# ==============================
+# MORE AGENTS
+# ==============================
 
 
 class QualityAgent(BaseAgent):
-    """
-    Checks content before publishing.
-    """
 
     async def execute(self, task):
+
         return {
+
             "agent": self.name,
-            "status": "quality checked",
+
+            "result": "quality checked",
+
             "data": task
+
         }
 
 
+
 class PublisherAgent(BaseAgent):
-    """
-    Publishes content to platforms.
-    """
 
     async def execute(self, task):
+
         return {
+
             "agent": self.name,
-            "status": "published",
+
+            "result": "published",
+
             "data": task
-      }
+
+        }
+
+
+
+class AnalyticsAgent(BaseAgent):
+
+    async def execute(self, task):
+
+        return {
+
+            "agent": self.name,
+
+            "result": "analytics collected",
+
+            "data": task
+
+        }
+
+
+
+class LearningAgent(BaseAgent):
+
+    async def execute(self, task):
+
+        return {
+
+            "agent": self.name,
+
+            "result": "learning updated",
+
+            "data": task
+
+        }
+
+
+
 # ==============================
-# 3. TASK PIPELINE
+# AGENT MANAGER
+# ==============================
+
+
+class AgentManager:
+
+    def __init__(self, logger):
+
+        self.logger = logger
+
+        self.agents = {}
+
+
+
+    def register_agent(self, name, agent):
+
+        self.agents[name] = agent
+
+        self.logger.info(
+            f"Agent registered: {name}"
+        )
+
+
+
+    def get_agent(self, name):
+
+        return self.agents.get(name)
+
+
+
+    async def run_agent(self, name, task):
+
+        agent = self.get_agent(name)
+
+
+        if not agent:
+
+            raise Exception(
+                f"Agent not found: {name}"
+            )
+
+
+        self.logger.info(
+            f"Running {name}"
+        )
+
+
+        return await agent.execute(task)
+
+
+
+# ==============================
+# TASK QUEUE
 # ==============================
 
 
 class TaskQueue:
-    """
-    Controls all system tasks.
-    """
 
     def __init__(self, logger):
-        self.queue = []
+
         self.logger = logger
 
+        self.queue = []
+
+
+
     def add_task(self, task):
+
         self.queue.append(task)
 
         self.logger.info(
             f"Task added: {task}"
         )
 
+
+
     def get_task(self):
+
         if self.queue:
+
             return self.queue.pop(0)
+
 
         return None
 
+
+
     def size(self):
+
         return len(self.queue)
 
 
 
+# ==============================
+# SCHEDULER
+# ==============================
+
+
 class Scheduler:
-    """
-    Controls publishing and execution timing.
-    """
 
     def __init__(self, logger):
+
         self.logger = logger
+
         self.schedule = []
 
+
+
     def add_schedule(self, time, task):
+
         self.schedule.append({
+
             "time": time,
+
             "task": task
+
         })
 
         self.logger.info(
             f"Schedule added: {time}"
         )
 
-    def get_schedule(self):
-        return self.schedule
 
+
+    def get_schedule(self):
+
+        return self.schedule
+# ==============================
+# CONTENT PIPELINE
+# ==============================
 
 
 class ContentPipeline:
-    """
-    Main content workflow:
-
-    News/Research
-        ↓
-    Writer
-        ↓
-    Media
-        ↓
-    Quality
-        ↓
-    Publisher
-        ↓
-    Analytics
-        ↓
-    Learning
-    """
 
     def __init__(
         self,
@@ -359,79 +453,98 @@ class ContentPipeline:
         storage,
         logger
     ):
+
         self.agent_manager = agent_manager
+
         self.storage = storage
+
         self.logger = logger
 
 
-    async def process_content(
-        self,
-        source,
-        topic
-    ):
 
-        try:
-            self.logger.info(
-                "Content pipeline started"
-            )
+    async def process_content(self, topic):
+
+        self.logger.info(
+            "Content pipeline started"
+        )
 
 
-            research = await self.agent_manager.run_agent(
-                "research_agent",
-                topic
-            )
+        research = await self.agent_manager.run_agent(
+            "research_agent",
+            topic
+        )
 
 
-            written = await self.agent_manager.run_agent(
-                "writer_agent",
-                research
-            )
+        written = await self.agent_manager.run_agent(
+            "writer_agent",
+            research
+        )
 
 
-            media = await self.agent_manager.run_agent(
-                "media_agent",
-                written
-            )
+        media = await self.agent_manager.run_agent(
+            "media_agent",
+            written
+        )
 
 
-            quality = await self.agent_manager.run_agent(
-                "quality_agent",
-                media
-            )
+        quality = await self.agent_manager.run_agent(
+            "quality_agent",
+            media
+        )
 
 
-            published = await self.agent_manager.run_agent(
-                "publisher_agent",
-                quality
-            )
+        published = await self.agent_manager.run_agent(
+            "publisher_agent",
+            quality
+        )
 
 
-            self.storage.save(
-                "content_history",
-                published
-            )
+        analytics = await self.agent_manager.run_agent(
+            "analytics_agent",
+            published
+        )
 
 
-            return published
+        learning = await self.agent_manager.run_agent(
+            "learning_agent",
+            analytics
+        )
 
 
-        except Exception as error:
+        result = {
 
-            self.logger.error(
-                f"Pipeline error: {error}"
-            )
+            "published": published,
 
-            raise error
+            "analytics": analytics,
+
+            "learning": learning
+
+        }
+
+
+        self.storage.save(
+            "content_history",
+            result
+        )
+
+
+        self.logger.info(
+            "Content pipeline finished"
+        )
+
+
+        return result
+
+
+
+
 # ==============================
-# 4. RUNTIME / CORE ENGINE
+# CORE BRAIN
 # ==============================
 
 
 class CoreBrain:
-    """
-    Main brain controller of Bot_v4.
-    Controls all systems.
-    """
+
 
     def __init__(self):
 
@@ -443,17 +556,21 @@ class CoreBrain:
 
         self.storage = Storage()
 
+
         self.agent_manager = AgentManager(
             self.logger
         )
+
 
         self.task_queue = TaskQueue(
             self.logger
         )
 
+
         self.scheduler = Scheduler(
             self.logger
         )
+
 
         self.pipeline = ContentPipeline(
             self.agent_manager,
@@ -462,10 +579,8 @@ class CoreBrain:
         )
 
 
+
     def load_agents(self):
-        """
-        Register all system agents.
-        """
 
         agents = [
 
@@ -491,6 +606,14 @@ class CoreBrain:
 
             PublisherAgent(
                 "publisher_agent"
+            ),
+
+            AnalyticsAgent(
+                "analytics_agent"
+            ),
+
+            LearningAgent(
+                "learning_agent"
             )
 
         ]
@@ -509,6 +632,7 @@ class CoreBrain:
         )
 
 
+
     async def start(self):
 
         try:
@@ -518,16 +642,16 @@ class CoreBrain:
             )
 
 
+            self.load_agents()
+
+
             self.health.update(
                 "running"
             )
 
 
-            self.load_agents()
-
-
             self.logger.info(
-                "Bot_v4 is ready"
+                "Bot_v4 ready"
             )
 
 
@@ -541,11 +665,15 @@ class CoreBrain:
                 "failed"
             )
 
-            self.logger.error(
-                error
-            )
-
             raise error
+
+
+
+    async def run_cycle(self, topic):
+
+        return await self.pipeline.process_content(
+            topic
+        )
 
 
 
@@ -555,55 +683,7 @@ class CoreBrain:
             "stopped"
         )
 
+
         self.logger.info(
             "Bot_v4 stopped"
         )
-
-
-
-    async def run_content_cycle(
-        self,
-        topic
-    ):
-
-        result = await self.pipeline.process_content(
-            "AI",
-            topic
-        )
-
-        return result
-
-
-
-# ==============================
-# MAIN RUNNER
-# ==============================
-
-
-async def main():
-
-    brain = CoreBrain()
-
-    await brain.start()
-
-
-    # Test cycle
-    result = await brain.run_content_cycle(
-        "PUBG Mobile latest update"
-    )
-
-
-    print(
-        result
-    )
-
-
-    await brain.shutdown()
-
-
-
-if __name__ == "__main__":
-
-    asyncio.run(
-        main()
-      )
