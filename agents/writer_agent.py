@@ -1,163 +1,98 @@
 # agents/writer_agent.py
 
-"""
-Bot_v4 AI Writer Agent
-
-Creates:
-- YouTube Shorts scripts
-- Long video scripts
-- Telegram posts
-- Titles
-- Hashtags
-- Tags
-"""
-
-
+import os
+import logging
 from datetime import datetime
 
 
 class WriterAgent:
-    """
-    AI content writing agent.
-    """
-
 
     def __init__(self):
 
         self.name = "writer_agent"
 
-        self.formats = [
-            "shorts",
-            "youtube_video",
-            "telegram_post"
-        ]
+        self.logger = logging.getLogger(
+            "BOT_V4"
+        )
 
-
-
-    async def initialize(self):
-
-        return {
-            "agent": self.name,
-            "status": "initialized"
-        }
-
-
-
-    def create_title(self, topic):
-
-        """
-        Generate content title.
-        """
-
-        return f"{topic} - Latest Update"
-
-
-
-    def create_hashtags(self, topic):
-
-        """
-        Generate hashtags.
-        """
-
-        return [
-            "#PUBGMobile",
-            "#MLBB",
-            "#Gaming",
-            "#GamingNews"
-        ]
-
-
-
-    def create_tags(self, topic):
-
-        """
-        Generate YouTube tags.
-        """
-
-        return [
-            "PUBG Mobile",
-            "Mobile Legends",
-            "Gaming News",
-            topic
-        ]
-
-
-
-    async def write_shorts(self, topic):
-
-        return {
-
-            "type": "shorts",
-
-            "title": self.create_title(topic),
-
-            "script": (
-                f"Today we talk about {topic}. "
-                "Here are the most important details."
-            ),
-
-            "hashtags": self.create_hashtags(topic),
-
-            "tags": self.create_tags(topic)
-
-        }
-
-
-
-    async def write_video(self, topic):
-
-        return {
-
-            "type": "long_video",
-
-            "title": self.create_title(topic),
-
-            "script": (
-                f"Full analysis about {topic}. "
-                "Explanation and details included."
-            ),
-
-            "hashtags": self.create_hashtags(topic),
-
-            "tags": self.create_tags(topic)
-
-        }
-
-
-
-    async def write_telegram_post(self, topic):
-
-        return {
-
-            "type": "telegram_post",
-
-            "text": (
-                f"🔥 Gaming News\n\n"
-                f"{topic}\n\n"
-                "Follow for more updates."
-            ),
-
-            "time": datetime.now().isoformat()
-
-        }
-
+        self.api_key = os.getenv(
+            "AI_API_KEY"
+        )
 
 
     async def execute(self, task):
 
+        try:
+
+            self.logger.info(
+                "Writer Agent started"
+            )
+
+
+            script = await self.create_content(
+                task
+            )
+
+
+            result = {
+
+                "agent": self.name,
+
+                "status": "completed",
+
+                "time": datetime.now().isoformat(),
+
+                "input": task,
+
+                "content": script
+
+            }
+
+
+            self.logger.info(
+                "Writer Agent finished"
+            )
+
+
+            return result
+
+
+        except Exception as error:
+
+            self.logger.error(
+                f"Writer Agent error: {error}"
+            )
+
+            raise error
+
+
+
+    async def create_content(self, data):
+
         """
-        Main entry from Core Brain.
+        AI model ulanish joyi.
+        API key .env orqali olinadi.
         """
 
-        content = await self.write_shorts(
-            task
-        )
+        if not self.api_key:
+
+            return {
+
+                "type": "script",
+
+                "title": "Generated content",
+
+                "text": str(data)
+
+            }
 
 
         return {
 
-            "agent": self.name,
+            "type": "ai_script",
 
-            "content": content
+            "title": "AI generated script",
+
+            "text": ""
 
         }
