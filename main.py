@@ -6,35 +6,33 @@ import logging
 from core.brain import CoreBrain
 
 
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
 
-
 async def main():
 
     brain = CoreBrain()
-
 
     try:
 
         await brain.start()
 
-
         print(
             "Bot_v4 started successfully"
         )
 
-
         while True:
+
+            await brain.run_cycle(
+                "PUBG Mobile latest update"
+            )
 
             await asyncio.sleep(
                 60
             )
-
 
     except KeyboardInterrupt:
 
@@ -42,18 +40,15 @@ async def main():
             "Stopping Bot_v4..."
         )
 
-
     except Exception as error:
 
         logging.error(
             f"System error: {error}"
         )
 
-
     finally:
 
         await brain.shutdown()
-
 
 
 if __name__ == "__main__":
